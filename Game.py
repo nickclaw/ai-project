@@ -20,8 +20,8 @@ class Game:
     Plays through the game
     '''
     def play(self):
-        for player in self.players:
-            player.init(self.board)
+        for (player, symbol) in self.players:
+            player.init(self.board, self.k, symbol)
 
         while not self.finished():
             self.step()
