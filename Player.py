@@ -15,5 +15,5 @@ class Player:
         self.symbol = symbol
         self.players = players
 
-    def move(self, board):
+    def move(self, board, turn):
         return (0, 0), ""

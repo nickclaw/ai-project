@@ -40,7 +40,6 @@ class Game:
     '''
     def step(self):
         index = self.turn % len(self.players)
-        self.turn += 1
 
         #  make sure player is still in the game
         if self.players[index] == None: return
@@ -53,8 +52,9 @@ class Game:
         #     kwargs={},
         #     default=(None, "I give up.")
         # )
-        (move, remark) = player.move(self.board)
+        (move, remark) = player.move(self.board, self.turn)
         print(symbol + " moved to " + str(move))
+        self.turn += 1
 
         # check for timeout or give up
         if (move == None):
