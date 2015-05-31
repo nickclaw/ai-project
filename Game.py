@@ -21,38 +21,54 @@ class Game:
     '''
     def play(self):
         for (player, symbol) in self.players:
-            player.init(self.board, self.k, symbol)
+            player.init(self.board, self.k, symbol, self.players)
 
         while not self.finished():
             self.step()
+            for line in self.board: print(line)
+            print("")
+
+        if self.winner is None:
+            print("Game ended in tie")
+            return
+
+        (player, symbol) = self.winner
+        print(symbol + " won the game!")
 
     '''
     Plays one step of the game
     '''
     def step(self):
         index = self.turn % len(self.players)
+        self.turn += 1
 
         #  make sure player is still in the game
         if self.players[index] == None: return
 
         # get player and have them move
         (player, symbol) = self.players[index]
-        (move, remark) = timeout(
-            func=player.move,
-            args=(self.board),
-            kwargs={},
-            default=(None, "I give up.")
-        )
+        # (move, remark) = timeout(
+        #     func=player.move,
+        #     args=(self.board),
+        #     kwargs={},
+        #     default=(None, "I give up.")
+        # )
+        (move, remark) = player.move(self.board)
+        print(symbol + " moved to " + str(move))
 
         # check for timeout or give up
         if (move == None):
-            self.players[index] = None
+            (_, s) = self.players[index]
+            self.players[index] = (None, s)
+            print(s + " gave up.")
             return
 
         # make sure valid move
         (y, x) = move
         if self.board[y][x] != ' ':
-            self.players[index] = None
+            (_, s) = self.players[index]
+            self.players[index] = (None, s)
+            print(s + " made invalid move.")
             return
         else:
             self.board[y][x] = symbol
@@ -65,8 +81,8 @@ class Game:
         # check cached winning result
         if self.winner != None: return True
 
-        # TODO check for tie
-        # if tied: return True
+        # check for tie
+        if is_full(self.board): return True
 
         # otherwise check if one player left
         playing = filter(lambda (player, symbol): player != None, self.players)
@@ -81,6 +97,14 @@ class Game:
         self.winner = filter(lambda (player, symbol): symbol == winningSymbol, self.players)[0]
         return True
 
+
+def is_full(board):
+    for row in board:
+        for move in row:
+            if move == " ":
+                return False
+
+    return True
 
 def has_winner(board, k):
     h = len(board)
@@ -99,26 +123,26 @@ def has_winner(board, k):
                 if x + z >= w: break
                 if y - z < 0: break
                 if board[y - z][x + z] != symbol: break
-                if z == k: return symbol # WINNER
+                if z + 1 == k: return symbol # WINNER
 
             # try a streak going 'right'
             for z in range(1, k):
                 if x + z >= w: break
                 if board[y][x + z] != symbol: break
-                if z == k: return symbol # WINNER
+                if z + 1 == k: return symbol # WINNER
 
             # try a streak going 'down and right'
             for z in range(1, k):
                 if x + z >= w: break
                 if y + z >= h: break
                 if board[y + z][x + z] != symbol: break
-                if z == k: return symbol # WINNER
+                if z + 1 == k: return symbol # WINNER
 
             # try a streak going 'down'
             for z in range(1, k):
                 if y + z >= h: break
                 if board[y + z][x] != symbol: break
-                if z == k: return symbol # WINNER
+                if z + 1 == k: return symbol # WINNER
     return None
 
 '''
@@ -137,7 +161,9 @@ def timeout(func, args=(), kwargs={}, default=None):
             self.result = default
         def run(self):
             try:
-                self.result = func(*args, **kwargs)
+                print(args)
+                print(kwargs)
+                self.result = func(args)
             except:
                 print("Seems there was a problem with the time.")
                 print(sys.exc_info())
