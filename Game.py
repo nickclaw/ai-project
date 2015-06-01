@@ -123,7 +123,7 @@ def has_winner(board, k):
 
             # check symbol and make sure it's start of streak
             symbol = board[y][x]
-            if symbol == " " or symbol == "-": break
+            if symbol == " " or symbol == "-": continue
 
             # try a streak going 'up and right'
             for z in range(1, k):

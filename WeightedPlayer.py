@@ -51,7 +51,9 @@ class WeightedPlayer(Player):
         for (player, symbol) in self.players:
             for streak in self.build_list(state, symbol):
                 count = streak_score(streak, state, symbol)
-                if count > 0 and symbol == self.symbol:
+                if count == self.k:
+                    myScore += self.k ** (count + 1)
+                elif count > 0 and symbol == self.symbol:
                     myScore += self.k ** (count - 1)
                 elif count > 0 and symbol != self.symbol:
                     theirScore += self.k ** (count)

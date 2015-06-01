@@ -22,11 +22,11 @@ class MinimaxPlayer(Player):
     def move(self, board, turn):
         index = turn % len(self.players)
         hash = self.zhash(board, index)
-        (move, _) = self.minimax(board, turn, 4, hash)
+        (move, _) = self.minimax(board, turn, -INF, INF, 5, hash)
         return (move, "")
 
 
-    def minimax(self, board, turn, depth, hash):
+    def minimax(self, board, turn, a, b, depth, hash):
         moves = get_moves(board)
         index = turn % len(self.players)
         (player, s) = self.players[index]
@@ -36,13 +36,13 @@ class MinimaxPlayer(Player):
             return self.dict[hash]
 
         # base case
-        if is_tie(board) or depth == 1:
+        if is_tie(board) or depth == 0:
             score = score_game(board, self.symbol, self.k)
             self.dict[hash] = None, score
             return None, score
 
         best_move = None
-        best_score = -INF if s == self.symbol else INF
+        best_score = a if s == self.symbol else b
         sum = 0
 
         # otherwise try each move for current player
@@ -52,16 +52,23 @@ class MinimaxPlayer(Player):
             new_hash = self.inc_hash(hash, y, x, index)
 
             # each state will have a score
-            (_, score) = self.minimax(state, turn + 1, depth - 1, new_hash)
+            (_, score) = self.minimax(state, turn + 1, a, b, depth - 1, new_hash)
 
             if s == self.symbol:
                 if best_score < score:
                     best_score = score
                     best_move = (y, x)
+                a = max(a, score)
+                if b <= a:
+                    break
+
             else:
                 if best_score > score:
                     best_score = score
                     best_move = (y, x)
+                b = min(b, score)
+                if b <= a:
+                    break
 
         self.dict[hash] = (best_move, best_score)
         return best_move, best_score
@@ -127,35 +134,50 @@ def score_game(board, s, k):
 
             # check symbol and make sure it's start of streak
             symbol = board[y][x]
+            symbols = [" ", symbol]
             if symbol == " " or symbol == "-": continue
-            mod = .5 if s == symbol else -2
+            mod = 1 if s == symbol else -5
 
             # try a streak going 'up and right'
+            sum = 0
             for z in range(0, k):
-                if x + z >= w: break
-                if y - z < 0: break
-                if board[y - z][x + z] != symbol: break
-                score += mod * (k ** z)
+                if x + z >= w or y - z < 0 or board[y - z][x + z] not in symbols:
+                    sum = 0
+                    break
+                if board[y - z][x + z] == symbol:
+                    sum += 1
+            score += mod * (k ** sum)
 
             # try a streak going 'right'
+            sum = 0
             for z in range(0, k):
-                if x + z >= w: break
-                if board[y][x + z] != symbol: break
-                score += mod * (k ** z)
+                if x + z >= w or board[y][x + z] not in symbols:
+                    sum = 0
+                    break
+                if board[y][x + z] == symbol:
+                    sum += 1
+            score += mod * (k ** sum)
 
 
             # try a streak going 'down and right'
+            sum = 0
             for z in range(0, k):
-                if x + z >= w: break
-                if y + z >= h: break
-                if board[y + z][x + z] != symbol: break
-                score += mod * (k ** z)
+                if x + z >= w or y + z >= h or board[y + z][x + z] != symbol:
+                    sum = 0
+                    break
+                if board[y + z][x + z] == symbol:
+                    sum += 1
+            score += mod * (k ** sum)
 
 
             # try a streak going 'down'
+            sum = 0
             for z in range(0, k):
-                if y + z >= h: break
-                if board[y + z][x] != symbol: break
-                score += mod * (k ** z)
+                if y + z >= h or board[y + z][x] != symbol:
+                    sum = 0
+                    break
+                if board[y + z][x] == symbol:
+                    sum += 1
+            score += mod * (k ** sum)
 
     return score
