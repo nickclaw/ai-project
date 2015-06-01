@@ -13,7 +13,7 @@ Global Variables
 
 class WeightedPlayer(Player):
 
-    def move(self, board, turn):
+    def move(self, board, turn, remarks):
         best_score = None
         best_move = None
 

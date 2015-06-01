@@ -15,5 +15,11 @@ class Player:
         self.symbol = symbol
         self.players = players
 
-    def move(self, board, turn):
+    def name(self):
+        return self.symbol
+
+    def introduce(self):
+        return "Hello, I am {0}".format(self.name())
+
+    def move(self, board, turn, remarks):
         return (0, 0), ""

@@ -19,7 +19,7 @@ class MinimaxPlayer(Player):
                 self.hashes[i].append(randint(0, 4294967296))
 
 
-    def move(self, board, turn):
+    def move(self, board, turn, remarks):
         index = turn % len(self.players)
         hash = self.zhash(board, index)
         (move, _) = self.minimax(board, turn, -INF, INF, 5, hash)

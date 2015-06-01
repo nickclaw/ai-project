@@ -8,6 +8,7 @@ class Game:
         self.players = []
         self.board = board
         self.k = k
+        self.remarks = []
 
     '''
     Adds a player to the game
@@ -19,6 +20,8 @@ class Game:
     def init(self):
         for (player, symbol) in self.players:
             player.init(self.board, self.k, symbol, self.players)
+            print(player.name() + ": " + player.introduce())
+            self.remarks.append("")
 
     '''
     Plays through the game
@@ -54,8 +57,10 @@ class Game:
         #     kwargs={},
         #     default=(None, "I give up.")
         # )
-        (move, remark) = player.move(self.board, self.turn)
+        (move, remark) = player.move(self.board, self.turn, self.remarks)
         print(symbol + " moved to " + str(move))
+        print(player.name() + ": " + remark)
+        self.remarks[index] = remark
         self.turn += 1
 
         # check for timeout or give up
