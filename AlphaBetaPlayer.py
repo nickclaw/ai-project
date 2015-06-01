@@ -2,18 +2,18 @@ from Player import Player
 
 INF = float('inf')
 
-class MinimaxPlayer(Player):
+class AlphaBetaPlayer(Player):
 
     def init(self, board, k, symbol, players):
         Player.init(self, board, k, symbol, players)
 
 
     def move(self, board, turn):
-        (move, _) = self.minimax(board, turn)
-        return (move, "")
+        (move, _) = self.alphabeta(board, -INF, INF, turn)
+        return move, ""
 
 
-    def minimax(self, board, turn):
+    def alphabeta(self, board, a, b, turn):
         moves = get_moves(board)
         index = turn % len(self.players)
         (player, s) = self.players[index]
@@ -28,7 +28,6 @@ class MinimaxPlayer(Player):
 
         best_move = None
         best_score = -INF if s == self.symbol else INF
-        sum = 0
 
         # otherwise try each move for current player
         for (y, x) in moves:
@@ -36,16 +35,20 @@ class MinimaxPlayer(Player):
             state[y][x] = s
 
             # each state will have a score
-            (_, score) = self.minimax(state, turn + 1)
+            (_, score) = self.alphabeta(state, a, b, turn + 1)
 
-            if (s == self.symbol):
+            if s == self.symbol:
                 if best_score < score:
                     best_score = score
                     best_move = (y, x)
+                a = max(a, best_score)
+                if b <= a: break;
             else:
                 if best_score > score:
                     best_score = score
                     best_move = (y, x)
+                b = min(b, best_score)
+                if b <= a: break;
 
         return best_move, best_score
 
