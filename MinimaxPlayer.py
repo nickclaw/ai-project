@@ -1,6 +1,12 @@
 from Player import Player
 
+INF = float('inf')
+
 class MinimaxPlayer(Player):
+
+    def init(self, board, k, symbol, players):
+        Player.init(self, board, k, symbol, players)
+
 
     def move(self, board, turn):
         (move, _) = self.minimax(board, turn)
@@ -21,7 +27,7 @@ class MinimaxPlayer(Player):
         elif winner is not None: return None, -1
 
         best_move = None
-        best_score = 0
+        best_score = -INF if s == self.symbol else INF
         sum = 0
 
         # otherwise try each move for current player
@@ -29,13 +35,19 @@ class MinimaxPlayer(Player):
             state = deep_copy(board)
             state[y][x] = s
 
+            # each state will have a score
             (_, score) = self.minimax(state, turn + 1)
-            sum += score
-            if best_move is None or score > best_score:
-                best_move = (y, x)
-                best_score = score
 
-        return best_move, sum
+            if (s == self.symbol):
+                if best_score < score:
+                    best_score = score
+                    best_move = (y, x)
+            else:
+                if best_score > score:
+                    best_score = score
+                    best_move = (y, x)
+
+        return best_move, best_score
 
 
 

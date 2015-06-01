@@ -81,9 +81,6 @@ class Game:
         # check cached winning result
         if self.winner != None: return True
 
-        # check for tie
-        if is_full(self.board): return True
-
         # otherwise check if one player left
         playing = filter(lambda (player, symbol): player != None, self.players)
         if len(playing) == 1:
@@ -92,10 +89,14 @@ class Game:
 
         # otherwise check for k in a row
         winningSymbol = has_winner(self.board, self.k)
-        if winningSymbol == None: return False
+        if winningSymbol is not None:
+            self.winner = filter(lambda (player, symbol): symbol == winningSymbol, self.players)[0]
+            return True
 
-        self.winner = filter(lambda (player, symbol): symbol == winningSymbol, self.players)[0]
-        return True
+         # check for tie
+        if is_full(self.board): return True
+
+        return False
 
 
 def is_full(board):
