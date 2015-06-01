@@ -20,8 +20,11 @@ class Game:
     def init(self):
         for (player, symbol) in self.players:
             player.init(self.board, self.k, symbol, self.players)
-            print(player.name() + ": " + player.introduce())
             self.remarks.append("")
+
+        for (player, symbol) in self.players:
+            print(player.name() + ": " + player.introduce())
+
 
     '''
     Plays through the game
