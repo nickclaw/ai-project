@@ -3,6 +3,7 @@ __author__ = 'danielnakamura'
 from random import randint
 from Player import Player
 
+INF = float('inf')
 
 class ZobristPlayer(Player):
     def __init__(self):
@@ -49,13 +50,19 @@ class ZobristPlayer(Player):
         # if tie 0
         # if we lose -1
         # if we win +1
-        if is_tie(board): return None, 0
+        if is_tie(board):
+            self.zobrist[hash_val] = (None, 0)
+            return None, 0
         winner = get_winner(board, self.k)
-        if winner == self.symbol: return None, 1
-        elif winner is not None: return None, -1
+        if winner == self.symbol:
+            self.zobrist[hash_val] = (None, 1)
+            return None, 1
+        elif winner is not None:
+            self.zobrist[hash_val] = (None, -1)
+            return None, -1
 
         best_move = None
-        best_score = 0
+        best_score = -INF if s == self.symbol else INF
         sum = 0
 
         # otherwise try each move for current player
@@ -63,13 +70,19 @@ class ZobristPlayer(Player):
             state = deep_copy(board)
             state[y][x] = s
 
+            # each state will have a score
             (_, score) = self.minimax(state, turn + 1)
-            sum += score
-            if best_move is None or score > best_score:
-                best_move = (y, x)
-                best_score = score
 
-        return best_move, sum
+            if (s == self.symbol):
+                if best_score < score:
+                    best_score = score
+                    best_move = (y, x)
+            else:
+                if best_score > score:
+                    best_score = score
+                    best_move = (y, x)
+        self.zobrist[hash_val] = (best_move, best_score)
+        return best_move, best_score
 
 
 
