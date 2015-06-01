@@ -16,16 +16,18 @@ class Game:
         self.players.append((player, symbol))
         return self
 
+    def init(self):
+        for (player, symbol) in self.players:
+            player.init(self.board, self.k, symbol, self.players)
+
     '''
     Plays through the game
     '''
     def play(self):
-        for (player, symbol) in self.players:
-            player.init(self.board, self.k, symbol, self.players)
-
+        self.init()
         while not self.finished():
             self.step()
-            for line in self.board: print(line)
+            self.print_state()
             print("")
 
         if self.winner is None:
@@ -97,6 +99,10 @@ class Game:
         if is_full(self.board): return True
 
         return False
+
+
+    def print_state(self):
+        for line in self.board: print(line)
 
 
 def is_full(board):

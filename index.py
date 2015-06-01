@@ -1,17 +1,23 @@
 from Game import Game
 from WeightedPlayer import WeightedPlayer
 from MinimaxPlayer import MinimaxPlayer
-from AlphaBetaPlayer import AlphaBetaPlayer
 
 board = [
-    [' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ']
+    [' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ']
 ]
 
-game = Game(board, 3)
+game = Game(board, 4)
 game.addPlayer(WeightedPlayer(), 'X')
-game.addPlayer(AlphaBetaPlayer(), 'V')
+game.addPlayer(MinimaxPlayer(), 'O')
+game.addPlayer(MinimaxPlayer(), 'V')
+game.addPlayer(WeightedPlayer(), 'A')
 
 game.play()
+# game.init()
+# game.step()
+# game.step()
+# game.print_state()
