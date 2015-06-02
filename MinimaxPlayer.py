@@ -1,5 +1,6 @@
 from Player import Player
 from random import randint
+import lang
 
 INF = float('inf')
 
@@ -9,9 +10,13 @@ class MinimaxPlayer(Player):
         Player.__init__(self)
         self.hashes = []
         self.dict = {}
+        self.memory = {}
+        self.hobbies = {}
+
 
     def init(self, board, k, symbol, players):
         Player.init(self, board, k, symbol, players)
+        hobbies = {0: 'work', 1: 'drink', 2: 'play football', 3: 'snowboard'}
 
         for i in range(self.h * self.w):
             self.hashes.append([])
@@ -91,6 +96,86 @@ class MinimaxPlayer(Player):
     '''
     def inc_hash(self, hash, y, x, player_index):
         return hash ^ self.hashes[y * self.h + x][player_index]
+
+    '''
+    Responds to opponent based of their conversation
+    '''
+    def respond(self, input):
+        hi = ['hello', 'hi', 'howdy', 'hey']
+        wordlist = lang.remove_punctuation(input).split(' ')
+        # undo any initial capitalization:
+        wordlist[0] = wordlist[0].lower()
+        mappedWordlist = you_me_map(wordlist)
+        mappedWordlist[0] = mappedWordlist[0].capitalize()
+        if 'name' in self.memory:
+            self.memory['name'] = stringify(wordlist)
+            return "Hi " + stringify(wordlist)
+        if wordlist[0]=='':
+            return "Please tell me something about you."
+        if wordlist[0] in hi:
+            return hi[randint(0, len(hi) - 1)]
+        if wordlist[0:2] == ['i','am']:
+            return ("Please tell me why you are " +\
+                  stringify(mappedWordlist[2:]) + '.')
+        if wpred(wordlist[0]):
+            print(wordlist)
+            if 'name' in wordlist and 'your' in wordlist:
+                ext = "what is your name?"
+                if 'name' in self.memory:
+                    ext = "but you should already know that " + self.memory['name']
+                return "My name is Ray the Bartender, " + ext
+            if 'hobby' in wordlist:
+                rand = randint(0, len(self.hobbies) - 1)
+                if 'hobbies' in self.memory and self.memory['hobbies'] == self.hobbies[rand]:
+                    rand = (rand + 1) % len(self.hobbies)
+                self.memory['hobbies'] = self.hobbies[rand]
+                return "I like to " + self.hobbies[rand] + ' in my free time.'
+            return ("You tell me " + wordlist[0] + ".")
+        if 'name' in wordlist:
+            if 'name' in self.memory:
+                name = getName(wordlist)
+                if self.memory['name'] == name:
+                    self.memory['cutoff'] = True
+                    return "You already told me your name is " + self.memory['name'] + "... Are you drunk? You're cut off."
+                return "You told me you're name was " + self.memory['name'] + ". Did you lie?"
+            else:
+                name = getName(wordlist)
+                self.memory['name'] = name
+                if name == '':
+                    return "I'm sorry what was your name?"
+                return "Hi, " + self.memory['name'] + " can I make you a drink?"
+        if wordlist[0:2] == ['i','have']:
+            return ("How do you possibly have " +\
+                  stringify(mappedWordlist[2:]) + '.')
+        if wordlist[0:2] == ['i','feel']:
+            feelings = ['fat', 'smart', 'cool', 'dumb', 'stupid', 'lazy', 'bored', 'loved', 'happy']
+            for word in wordlist[2:]:
+                if word in feelings:
+                    return "Hey, everyone feels " + word + " sometimes. Have another drink."
+            return "I'm not sure I know that feeling. Sorry :("
+        if 'because' in wordlist:
+            return "I don't need your reasons, just tell me you need another drink."
+        if 'yes' in wordlist:
+            return "Yes, you'd like another drink? Coming right up."
+        if verbp(wordlist[0]):
+            return ("If i go " +\
+                  stringify(mappedWordlist) + ' with you will you leave me alone?')
+        if wordlist[0:3] == ['do','you','think']:
+            return "After as many drinks as you've had, I'm surprised you can think at all."
+        if wordlist[0:2]==['can','you'] or wordlist[0:2]==['could','you']:
+            return "Perhaps I " + wordlist[0] + ' ' +\
+                 stringify(mappedWordlist[2:]) + ' however you never know the repercussions of ' +\
+                   stringify(mappedWordlist[2:])
+        if 'love' in wordlist:
+            return "Hey, the bar probably isn't the best place to be talking of love."
+        if 'no' in wordlist:
+            return "Why don't you try saying 'yes' every so often?"
+        if 'maybe' in wordlist:
+            return "Give it a try, you never know till you try."
+        if 'you' in mappedWordlist or 'You' in mappedWordlist:
+            return stringify(mappedWordlist) + '.'
+        return punt()
+
 '''
 Deep copy the two dimensional board state
 '''
@@ -181,3 +266,53 @@ def score_game(board, s, k):
             score += mod * (k ** sum)
 
     return score
+
+def wpred(w):
+    'Returns True if w is one of the question words.'
+    return (w in ['what', 'when','why','where','how'])
+
+def dpred(w):
+    'Returns True if w is an auxiliary verb.'
+    return (w in ['do','can','should','would'])
+
+def stringify(wordlist):
+    'Create a string from wordlist, but with spaces between words.'
+    return ' '.join(wordlist)
+
+def you_me(w):
+    'Changes a word from 1st to 2nd person or vice-versa.'
+    try:
+        result = lang.case_map[w]
+    except KeyError:
+        result = w
+    return result
+
+def you_me_map(wordlist):
+    'Applies YOU-ME to a whole sentence or phrase.'
+    return [you_me(w) for w in wordlist]
+
+def verbp(w):
+    'Returns True if w is one of these known verbs.'
+    return (w in ['go', 'have', 'be', 'try', 'eat', 'take', 'help',
+                  'make', 'get', 'jump', 'write', 'type', 'fill',
+                  'put', 'turn', 'compute', 'think', 'drink',
+                  'blink', 'crash', 'crunch', 'add'])
+
+PUNTS = ['What kind of move was that?',
+         'Do I need to take that beer away from you?',
+         'What does that indicate?',
+         'I will open a tab for you.']
+
+punt_count = 0
+def punt():
+    'Returns one from a list of default responses.'
+    global punt_count
+    punt_count += 1
+    return PUNTS[punt_count % 6]
+
+def getName(wordlist):
+    name = ""
+    for word in wordlist:
+        if word[0].isupper():
+            name = word
+    return name
