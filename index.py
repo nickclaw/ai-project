@@ -1,6 +1,7 @@
 from Game import Game
 from WeightedPlayer import WeightedPlayer
 from MinimaxPlayer import MinimaxPlayer
+from UserPlayer import UserPlayer
 
 board = [
     [' ', ' ', ' ', ' ', ' '],
@@ -12,7 +13,7 @@ board = [
 
 game = Game(board, 4)
 game.addPlayer(MinimaxPlayer(), 'O')
-game.addPlayer(WeightedPlayer(), 'X')
+game.addPlayer(UserPlayer(), 'X')
 
 game.play()
 # game.init()

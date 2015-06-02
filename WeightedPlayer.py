@@ -6,6 +6,7 @@ Our working K in a row player
 
 import random
 from Player import Player
+import lang
 
 '''
 Global Variables
@@ -37,7 +38,10 @@ class WeightedPlayer(Player):
                     best_score = score
                     best_move = (y, x)
 
-        return best_move, ""
+        # fallback response
+        response = "Good move."
+
+        return best_move, response
 
     '''
     Evaluate the current state
