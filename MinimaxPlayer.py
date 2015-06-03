@@ -101,15 +101,23 @@ class MinimaxPlayer(Player):
     Responds to opponent based of their conversation
     '''
     def make_remark(self, state, turn, _remarks):
-        print(_remarks)
         input = _remarks[0]
         hi = ['hello', 'hi', 'howdy', 'hey']
         wordlist = lang.remove_punctuation(input).split(' ')
         # undo any initial capitalization:
         wordlist[0] = wordlist[0].lower()
-        print(wordlist)
         mappedWordlist = you_me_map(wordlist)
         mappedWordlist[0] = mappedWordlist[0].capitalize()
+        if wordlist[0:2] == ['you', "don't"]:
+            if self.name() in wordlist:
+                wordlist[wordlist.index(self.name)] = ""
+            return "I bet I do " + stringify(mappedWordlist[2:])
+        if wordlist[0:2] == ['do', 'you']:
+            return "I do in fact " + stringify(mappedWordlist[2:])
+        if wordlist[0:2] == ['did', 'you']:
+            if self.name() in mappedWordlist:
+                mappedWordlist[mappedWordlist.index(self.name)] = ""
+            return "Yes I did " + stringify(mappedWordlist[2:])
         if 'name' in self.memory:
             self.memory['name'] = stringify(wordlist)
             return "Hi " + stringify(wordlist)
@@ -118,25 +126,20 @@ class MinimaxPlayer(Player):
         if wordlist[0] in hi:
             return hi[randint(0, len(hi) - 1)]
         if wordlist[0:2] == ['how', 'did']:
-            return ("I'll show you how " + stringify(mappedWordlist[2:]))
+            if wordlist[len(wordlist) - 1].isupper():
+                return "I couldn't tell you how " + stringify(mappedWordlist[3:len(mappedWordlist) -1 ])
+            return ("I'll show you how I " + stringify(mappedWordlist[3:]))
         if wordlist[0:2] == ['i','am']:
             return ("Please tell me why you are " +\
                   stringify(mappedWordlist[2:]) + '.')
         if wordlist[0:2] == ['i', 'know']:
             return ("You don't know shit!")
         if wpred(wordlist[0]):
-            print(wordlist)
             if 'name' in wordlist and 'your' in wordlist:
                 ext = "what is your name?"
                 if 'name' in self.memory:
                     ext = "but you should already know that " + self.memory['name']
                 return "My name is Daniel, " + ext
-            if 'hobby' in wordlist:
-                rand = randint(0, len(self.hobbies) - 1)
-                if 'hobbies' in self.memory and self.memory['hobbies'] == self.hobbies[rand]:
-                    rand = (rand + 1) % len(self.hobbies)
-                self.memory['hobbies'] = self.hobbies[rand]
-                return "I like to " + self.hobbies[rand] + ' in my free time.'
             return ("You tell me " + wordlist[0] + ".")
         if 'name' in wordlist:
             if 'name' in self.memory:
@@ -150,7 +153,7 @@ class MinimaxPlayer(Player):
                 self.memory['name'] = name
                 if name == '':
                     return "I'm sorry what was your name?"
-                return "Hi, " + self.memory['name'] + " can I make you a drink?"
+                return "Hi, " + self.memory['name'] + ", you should lay off the booze so you can play better."
         if wordlist[0:2] == ['i','have']:
             return ("How do you possibly have " +\
                   stringify(mappedWordlist[2:]) + '.')
@@ -161,24 +164,20 @@ class MinimaxPlayer(Player):
                     return "Hey, everyone feels " + word + " sometimes. Have another drink."
             return "I'm not sure I know that feeling. Sorry :("
         if 'because' in wordlist:
-            return "I don't need your reasons, just tell me you need another drink."
+            return "I don't need your reasons, make your move already."
         if 'yes' in wordlist:
             return "Yes, you'd like another drink? Coming right up."
         if verbp(wordlist[0]):
             return ("If i go " +\
-                  stringify(mappedWordlist) + ' with you will you leave me alone?')
-        if wordlist[0:3] == ['do','you','think']:
+                  stringify(mappedWordlist) + ' with you will you let me win?')
+        if wordlist[0:2] == ['i','think']:
             return "After as many drinks as you've had, I'm surprised you can think at all."
         if wordlist[0:2]==['can','you'] or wordlist[0:2]==['could','you']:
             return "Perhaps I " + wordlist[0] + ' ' +\
                  stringify(mappedWordlist[2:]) + ' however you never know the repercussions of ' +\
                    stringify(mappedWordlist[2:])
-        if 'love' in wordlist:
-            return "Hey, the bar probably isn't the best place to be talking of love."
         if 'no' in wordlist:
             return "Why don't you try saying 'yes' every so often?"
-        if 'maybe' in wordlist:
-            return "Give it a try, you never know till you try."
         if 'you' in mappedWordlist or 'You' in mappedWordlist:
             return stringify(mappedWordlist) + '.'
         return punt()
@@ -308,14 +307,16 @@ def verbp(w):
 PUNTS = ['What kind of move was that?',
          'Do I need to take that beer away from you?',
          'What does that indicate?',
-         'I will open a tab for you.']
+         'You really need to learn to play better.',
+         'You are about to become as irrelevant to this game as dog fur.',
+         'When you learn to play, come talk to me then.']
 
 punt_count = 0
 def punt():
     'Returns one from a list of default responses.'
     global punt_count
     punt_count += 1
-    return PUNTS[punt_count % 4]
+    return PUNTS[punt_count % 6]
 
 def getName(wordlist):
     name = ""
