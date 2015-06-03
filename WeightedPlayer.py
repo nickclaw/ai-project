@@ -43,7 +43,7 @@ GOOD_TWIST = [
     "Did you expect that sort of comeback?!",
     "Booyah!",
     "It's comeback time baby!",
-    "Now it's a realy game!",
+    "Now it's a real game!",
     "Why did you stop trying?"
 ]
 BAD_TWIST = [
