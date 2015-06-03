@@ -315,7 +315,7 @@ def punt():
     'Returns one from a list of default responses.'
     global punt_count
     punt_count += 1
-    return PUNTS[punt_count % 6]
+    return PUNTS[punt_count % 4]
 
 def getName(wordlist):
     name = ""
