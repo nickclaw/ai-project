@@ -15,8 +15,8 @@ Global Variables
 GOOD = [
     "You don't stand a chance against me, {0}!",
     "You're going down!",
-    "Did you see that one coming {}?",
-    "You are doing really bad {}.",
+    "Did you see that one coming {0}?",
+    "You are doing really bad {0}.",
     "Do you now understand the rules?",
     "You are really bad at this game",
     "I think I'm going to win this one!",
@@ -27,7 +27,7 @@ BAD = [
     "How did this get so bad??",
     "Good move {0}",
     "Your skills are really good {0}",
-    "How did you get so good {0}"
+    "How did you get so good {0}",
     "Do you play this game all the time?"
 ]
 MEH = [
@@ -61,7 +61,7 @@ REASON = [
     "mind your own beeswax!",
     "it's really the only thing I can say.",
     "the gods made it so!",
-    "that is what I choose to believe.",
+    "that is what I choose to believe."
 ]
 EXPLANATION = [
     "cheating..",
@@ -71,8 +71,8 @@ EXPLANATION = [
 
 class WeightedPlayer(Player):
 
-    def __init__(self):
-        Player.__init__(self)
+    def __init__(self, name):
+        Player.__init__(self, name)
         self.previous_score = 0
 
     def move(self, board, turn, remarks):

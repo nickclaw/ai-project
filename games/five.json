@@ -1,0 +1,29 @@
+{
+  "board": [
+    [" ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " "]
+  ],
+
+  "k": 5,
+
+  "players": [
+    {
+      "type": "WeightedPlayer",
+      "symbol": "X",
+      "name": "Nick"
+    },
+    {
+      "type": "MinimaxPlayer",
+      "symbol": "O",
+      "name": "Daniel"
+    },
+    {
+      "type": "WeightedPlayer",
+      "symbol": "V",
+      "name": "Bob"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "board": [
+    [" ", " ", " "],
+    [" ", " ", " "],
+    [" ", " ", " "]
+  ],
+
+  "k": 3,
+
+  "players": [
+    {
+      "type": "WeightedPlayer",
+      "symbol": "X",
+      "name": "Nick"
+    },
+    {
+      "type": "MinimaxPlayer",
+      "symbol": "O",
+      "name": "Daniel"
+    }
+  ]
+}

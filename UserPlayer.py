@@ -3,9 +3,8 @@ from re import *
 
 class UserPlayer(Player):
 
-    def __init__(self):
-        Player.__init__(self)
-        self.nm = ""
+    def __init__(self, name):
+        Player.__init__(self, name)
         self.intro = ""
 
     def init(self, board, k, symbol, players):
