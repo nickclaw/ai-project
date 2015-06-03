@@ -16,7 +16,11 @@ GOOD = [
     "You don't stand a chance against me, {0}!",
     "You're going down!",
     "Did you see that one coming {}?",
-    "You are doing really bad {}."
+    "You are doing really bad {}.",
+    "Do you now understand the rules?",
+    "You are really bad at this game",
+    "I think I'm going to win this one!",
+    "Only a few moves until victory!"
 ]
 BAD = [
     "How do you play this game? I apparently forgot..",
@@ -24,23 +28,32 @@ BAD = [
     "Good move {0}",
     "Your skills are really good {0}",
     "How did you get so good {0}"
+    "Do you play this game all the time?"
 ]
 MEH = [
     "Do you think you're going to win {0}?",
     "I don't really know where to put this piece so whatever..",
     "I guess this move'll do..",
-    "Do you think this will end up in a tie {0}?"
+    "Do you think this will end up in a tie {0}?",
+    "This game is pretty boring.",
+    "Do you think this game is boring",
+    "We're so evenly matched!"
 ]
 GOOD_TWIST = [
     "Did you expect that sort of comeback?!",
     "Booyah!",
-    "It's comeback time baby!"
+    "It's comeback time baby!",
+    "Now it's a realy game!",
+    "Why did you stop trying?"
 ]
 BAD_TWIST = [
     "Where did that come from?",
     "I did not see that coming {0}..",
     "How did you do that {0}?",
-    "That move doesn't even seem legal.."
+    "That move doesn't even seem legal..",
+    "That wasn't nice {0}!",
+    "Seriously?!",
+    "Why did you start playing all of a sudden?"
 ]
 REASON = [
     "reasons!",
@@ -50,7 +63,6 @@ REASON = [
     "the gods made it so!",
     "that is what I choose to believe.",
 ]
-
 EXPLANATION = [
     "cheating..",
     "being the better person {0}.",
