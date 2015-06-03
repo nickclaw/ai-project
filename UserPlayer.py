@@ -8,7 +8,6 @@ class UserPlayer(Player):
         self.intro = ""
 
     def init(self, board, k, symbol, players):
-        self.nm = raw_input("What's your name: ")
         self.intro = raw_input("Introduce yourself: ")
 
     def name(self):

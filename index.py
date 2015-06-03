@@ -28,7 +28,7 @@ game = Game(board, k)
 
 for player in players:
     if player["type"] == "WeightedPlayer": game.addPlayer(WeightedPlayer(player["name"]), player["symbol"])
-    if player["type"] == "MinimaxPlayer": game.addPlayer(WeightedPlayer(player["name"]), player["symbol"])
-    if player["type"] == "UserPlayer": game.addPlayer(WeightedPlayer(player["name"]), player["symbol"])
+    if player["type"] == "MinimaxPlayer": game.addPlayer(MinimaxPlayer(player["name"]), player["symbol"])
+    if player["type"] == "UserPlayer": game.addPlayer(UserPlayer(player["name"]), player["symbol"])
 
 game.play()

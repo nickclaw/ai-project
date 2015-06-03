@@ -6,8 +6,8 @@ INF = float('inf')
 
 class MinimaxPlayer(Player):
 
-    def __init__(self):
-        Player.__init__(self)
+    def __init__(self, name):
+        Player.__init__(self, name)
         self.hashes = []
         self.dict = {}
         self.memory = {}

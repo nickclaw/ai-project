@@ -18,12 +18,14 @@ class Game:
         return self
 
     def init(self):
+        print("")
         for (player, symbol) in self.players:
             player.init(self.board, self.k, symbol, self.players)
             self.remarks.append("")
 
         for (player, symbol) in self.players:
             print(player.name() + ": " + player.introduce())
+        print("")
 
 
     '''
@@ -92,7 +94,7 @@ class Game:
         if self.winner != None: return True
 
         # otherwise check if one player left
-        playing = filter(lambda (player, symbol): player != None, self.players)
+        playing = list(filter(lambda t: t[0] is not None, self.players))
         if len(playing) == 1:
             self.winner = playing[0]
             return True
@@ -100,7 +102,7 @@ class Game:
         # otherwise check for k in a row
         winningSymbol = has_winner(self.board, self.k)
         if winningSymbol is not None:
-            self.winner = filter(lambda (player, symbol): symbol == winningSymbol, self.players)[0]
+            self.winner = list(filter(lambda t: t[1] == winningSymbol, self.players))[0]
             return True
 
          # check for tie
@@ -117,7 +119,6 @@ class Game:
             str += "|".join(row)
             str += "|\n"
             str += ("+-" * (len(self.board[0]) + 1))[:-1] + "\n"
-
 
         print(str)
 
