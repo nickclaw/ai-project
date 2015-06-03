@@ -110,7 +110,16 @@ class Game:
 
 
     def print_state(self):
-        for line in self.board: print(line)
+        str = ("-" * (len(self.board[0]) * 2 + 1)) + "\n"
+
+        for row in self.board:
+            str += "|"
+            str += "|".join(row)
+            str += "|\n"
+            str += ("+-" * (len(self.board[0]) + 1))[:-1] + "\n"
+
+
+        print(str)
 
 
 def is_full(board):
