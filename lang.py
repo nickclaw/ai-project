@@ -10,7 +10,9 @@ case_map = {
     'yours': 'mine',
     'mine': 'yours',
     'am': 'are',
-    "are": "am"
+    "are": "am",
+    "get": "got",
+    "did": "do"
 }
 
 
@@ -21,6 +23,7 @@ def remove_punctuation(string):
 
 '''Returns a list of words with no punctuation'''
 def to_wordlist(string):
+    string = re.split(punctuation_pattern, string)[0]
     return re.split("\s", remove_punctuation(string))
 
 

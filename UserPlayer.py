@@ -23,7 +23,7 @@ class UserPlayer(Player):
         m = match("(\d+).*(\d+).*", result)
         while m is None:
             result = raw_input("Invalid, try again: ")
-            m = match("\d+.*\d+.*", result)
+            m = match("(\d+).*(\d+).*", result)
 
         remark = raw_input("Enter your remark:  ")
 
