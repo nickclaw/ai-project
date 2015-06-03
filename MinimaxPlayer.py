@@ -28,7 +28,7 @@ class MinimaxPlayer(Player):
         index = turn % len(self.players)
         hash = self.zhash(board, index)
         (move, _) = self.minimax(board, turn, -INF, INF, 5, hash)
-        return (move, "")
+        return (move, self.make_remark(board, turn, remarks))
 
 
     def minimax(self, board, turn, a, b, depth, hash):
@@ -100,30 +100,37 @@ class MinimaxPlayer(Player):
     '''
     Responds to opponent based of their conversation
     '''
-    def respond(self, input):
+    def make_remark(self, state, turn, _remarks):
+        print(_remarks)
+        input = _remarks[0]
         hi = ['hello', 'hi', 'howdy', 'hey']
         wordlist = lang.remove_punctuation(input).split(' ')
         # undo any initial capitalization:
         wordlist[0] = wordlist[0].lower()
+        print(wordlist)
         mappedWordlist = you_me_map(wordlist)
         mappedWordlist[0] = mappedWordlist[0].capitalize()
         if 'name' in self.memory:
             self.memory['name'] = stringify(wordlist)
             return "Hi " + stringify(wordlist)
         if wordlist[0]=='':
-            return "Please tell me something about you."
+            return "You really should learn the rules of this game."
         if wordlist[0] in hi:
             return hi[randint(0, len(hi) - 1)]
+        if wordlist[0:2] == ['how', 'did']:
+            return ("I'll show you how " + stringify(mappedWordlist[2:]))
         if wordlist[0:2] == ['i','am']:
             return ("Please tell me why you are " +\
                   stringify(mappedWordlist[2:]) + '.')
+        if wordlist[0:2] == ['i', 'know']:
+            return ("You don't know shit!")
         if wpred(wordlist[0]):
             print(wordlist)
             if 'name' in wordlist and 'your' in wordlist:
                 ext = "what is your name?"
                 if 'name' in self.memory:
                     ext = "but you should already know that " + self.memory['name']
-                return "My name is Ray the Bartender, " + ext
+                return "My name is Daniel, " + ext
             if 'hobby' in wordlist:
                 rand = randint(0, len(self.hobbies) - 1)
                 if 'hobbies' in self.memory and self.memory['hobbies'] == self.hobbies[rand]:
