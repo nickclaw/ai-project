@@ -12,7 +12,42 @@ import lang
 Global Variables
 '''
 
+GOOD = [
+    "You don't stand a chance against me, {0}!",
+    "You're going down!",
+    "Did you see that one coming?",
+]
+BAD = [
+    "How do you play this game? I apparently forgot..",
+    "How did this get so bad??"
+    "Good move {0}",
+    "Your skills are really good {0}",
+    "How did you get so good {0}"
+]
+MEH = [
+    "Do you think you're going to win {0}?",
+    "I don't really know where to put this piece so whatever..",
+    "I guess this move'll do..",
+    "Do you think this will end up in a tie {0}?"
+]
+GOOD_TWIST = [
+    "Did you expect that sort of comeback?!",
+    "Booyah!",
+    "It's comeback time baby!"
+]
+BAD_TWIST = [
+    "Where did that come from?",
+    "I did not see that coming {0}..",
+    "How did you do that {0}?",
+    "That move doesn't even seem legal.."
+]
+REASON = []
+
 class WeightedPlayer(Player):
+
+    def __init__(self):
+        Player.__init__(self)
+        self.previous_score = 0
 
     def move(self, board, turn, remarks):
         best_score = None
@@ -41,7 +76,7 @@ class WeightedPlayer(Player):
         # fallback response
         response = "Good move."
 
-        return best_move, response
+        return best_move, self.make_remark(board, best_move, turn, remarks)
 
     '''
     Evaluate the current state
@@ -108,6 +143,77 @@ class WeightedPlayer(Player):
                     streak.append((x, y + z))
                 if len(streak) == K: STREAKS.append(streak)
         return STREAKS
+
+    def make_remark(self, state, move, turn, _remarks):
+
+        # get useful variables
+        remark = "Nice move." # default
+        index = turn % len(self.players)
+        new_state = deep_copy(state)
+        (y, x) = move
+        new_state[y][x] = self.symbol
+        score = self.eval(new_state)
+        old_score = self.previous_score
+        self.previous_score = score
+        diff = score - old_score
+        limit = self.k  * 2
+        print("DIFF", diff)
+        print("SCORE", score)
+
+        # build other players remarks in reverse order
+        remarks = []
+        for i in range(1, len(self.players)):
+            j = (turn - i) % len(self.players)
+            remarks.append((self.players[j], _remarks[j]))
+
+
+        for ((player, symbol), remark) in remarks:
+            if turn == 0: break
+            wordlist = lang.to_wordlist(remark)
+            inverse = lang.invert(wordlist)
+
+            print("name", player.name())
+            if self.name().lower() not in wordlist:
+                if random.randint(0, 10) <= 2: break
+                if random.randint(0, 10) <= 2: continue
+            print("continued")
+            print(wordlist[0:1])
+
+            # see if there is a question
+            if wordlist[0:1] == ["how"]:
+                return "ANSWER TO HOW"
+
+            if wordlist[0:1] == ["what"]:
+                return "ANSWER TO WHAT"
+
+            if wordlist[0:1] == ["why"]:
+                return "ANSWER TO WHY"
+
+            if wordlist[0:1] == ["did"]:
+                return "ANSWER TO DID"
+
+            if wordlist[0:1] == ["do"]:
+                return "ANSWER TO DO"
+
+            if len(wordlist) == 0:
+                return "Why so silent {0}?".format(player.name())
+
+            if "good" in wordlist or "bad" in wordlist:
+                return "I know it was {0}!".format(player.name())
+
+        if diff > limit:
+            return GOOD_TWIST[random.randint(0, len(GOOD_TWIST) - 1)].format(player.name())
+
+        if diff < -limit:
+            return BAD_TWIST[random.randint(0, len(BAD_TWIST) - 1)].format(player.name())
+
+        if score > self.k:
+            return GOOD[random.randint(0, len(GOOD) - 1)].format(player.name())
+
+        if score > self.k:
+            return GOOD[random.randint(0, len(GOOD) - 1)].format(player.name())
+
+        return MEH[random.randint(0, len(MEH) - 1)].format(player.name())
 
 
 '''
